@@ -15,10 +15,14 @@ interface Product {
 
 type FilterStatus = "all" | "inStock" | "outStock";
 
-const PRODOCT_URL = "/assets/products.json";
+const PRODUCT_URL = "/assets/products.json";
 
 async function fetchProducts(): Promise<Product[]> {
-  const response = await fetch(PRODOCT_URL);
+  const response = await fetch(PRODUCT_URL);
+  if (!response.ok) {
+    throw new Error("The product request failed.");
+  }
+
   const products = (await response.json()) as Product[];
 
   return products;
@@ -30,7 +34,7 @@ function App() {
   const [products, setProducts] = useState<Product[]>([]);
 
   const [hasProductsError, setHasProductsError] = useState(false);
-  const [isLoadingProducts, setIsLoadingProducts] = useState(false);
+  const [isLoadingProducts, setIsLoadingProducts] = useState(true);
 
   function handleSearchChange(event: ChangeEvent<HTMLInputElement>) {
     setSearchText(event.target.value);
@@ -73,22 +77,26 @@ function App() {
     setProducts(updatedProducts);
   }
 
-  function AddNewProduct(
+  function handleAddProduct(
     name: string,
     category: string,
     price: number,
-    inStock: number,
+    inStock: boolean,
   ): void {
-    let status = true;
-    if (inStock === 1) status = true;
-    else status = false;
+    const nextId =
+      products.reduce(function (highestId, product) {
+        if (product.id > highestId) {
+          return product.id;
+        }
+        return highestId;
+      }, 0) + 1;
 
     const draftProduct: Product = {
-      id: products.length + 1,
+      id: nextId,
       name: name.trim(),
       category: category.trim(),
       price: price,
-      inStock: status,
+      inStock: inStock,
     };
 
     const newProducts = [...products, draftProduct];
@@ -130,7 +138,7 @@ function App() {
       const _products = await fetchProducts();
       setProducts(_products);
       setIsLoadingProducts(false);
-    } catch (error) {
+    } catch {
       setIsLoadingProducts(false);
       setHasProductsError(true);
     }
@@ -149,50 +157,54 @@ function App() {
           <StatCard label="Out of Stock" value={outStockCount} />
         </section>
 
-        <AddProduct
-          productsList={products}
-          defaultCategory={""}
-          onAddProduct={AddNewProduct}
-        />
+        {!isLoadingProducts && !hasProductsError && (
+          <AddProduct onAddProduct={handleAddProduct} />
+        )}
 
-        <section className="search">
-          <input
-            type="text"
-            className="search-input"
-            placeholder="Search product..."
-            value={searchText}
-            onChange={handleSearchChange}
-          />
-        </section>
+        {!isLoadingProducts && !hasProductsError && (
+          <div className="product-controls">
+            <section className="search">
+              <input
+                type="text"
+                className="search-input"
+                placeholder="Search product..."
+                value={searchText}
+                onChange={handleSearchChange}
+              />
+            </section>
 
-        <section className="filters">
-          <button
-            className={
-              "filter-button" + (currentFilter === "all" ? " active" : "")
-            }
-            onClick={handleShowAll}
-          >
-            All
-          </button>
-          <button
-            className={
-              "filter-button" + (currentFilter === "inStock" ? " active" : "")
-            }
-            onClick={handleShowInStock}
-          >
-            InStock
-          </button>
-          <button
-            className={
-              "filter-button" + (currentFilter === "outStock" ? " active" : "")
-            }
-            onClick={handleShowOutStock}
-          >
-            Out of Stock
-          </button>
-        </section>
+            <section className="filters">
+              <button
+                className={
+                  "filter-button" + (currentFilter === "all" ? " active" : "")
+                }
+                onClick={handleShowAll}
+              >
+                All
+              </button>
+              <button
+                className={
+                  "filter-button" +
+                  (currentFilter === "inStock" ? " active" : "")
+                }
+                onClick={handleShowInStock}
+              >
+                In Stock
+              </button>
+              <button
+                className={
+                  "filter-button" +
+                  (currentFilter === "outStock" ? " active" : "")
+                }
+                onClick={handleShowOutStock}
+              >
+                Out of Stock
+              </button>
+            </section>
+          </div>
+        )}
 
-        {isLoadingProducts && <p className="message">Loading tasks...</p>}
+        {isLoadingProducts && <p className="message">Loading products...</p>}
         {!isLoadingProducts && hasProductsError && (
           <div className="message error">
             <p>
@@ -204,26 +216,31 @@ function App() {
             </button>
           </div>
         )}
-        <ul className="product-list">
-          {!isLoadingProducts &&
-          !hasProductsError &&
-          visibleProducts.length > 0 ? (
-            visibleProducts.map((product) => (
-              <ProductList
-                id={product.id}
-                name={product.name}
-                price={product.price}
-                inStock={product.inStock}
-                category={product.category}
-                onToggle={handleToggleProduct}
-                onDelete={handleDeleteProduct}
-                onEdit={handleSaveEdit}
-              />
-            ))
-          ) : (
-            <p className="empty-state">No products to show.</p>
-          )}
-        </ul>
+        {!isLoadingProducts && !hasProductsError && (
+          <ul className="product-list">
+            {visibleProducts.length > 0 ? (
+              visibleProducts.map((product) => (
+                <ProductList
+                  key={product.id}
+                  id={product.id}
+                  name={product.name}
+                  price={product.price}
+                  inStock={product.inStock}
+                  category={product.category}
+                  onToggle={handleToggleProduct}
+                  onDelete={handleDeleteProduct}
+                  onEdit={handleSaveEdit}
+                />
+              ))
+            ) : (
+              <li className="empty-state">
+                {products.length === 0
+                  ? "No products to show."
+                  : "No products match your search and filter."}
+              </li>
+            )}
+          </ul>
+        )}
       </main>
     </div>
   );

@@ -1,28 +1,21 @@
-import { ChangeEvent, FormEvent, useState } from "react";
+import { useState } from "react";
+import type { ChangeEvent, FormEvent } from "react";
 
-interface Product {
-  name: string;
-  category: string;
-  price: number;
-  inStock: boolean;
-}
 interface addProductProps {
-  productsList: Product[];
-  defaultCategory: string;
   onAddProduct: (
     name: string,
     category: string,
     price: number,
-    inStock: number,
+    inStock: boolean,
   ) => void;
 }
 const MAX_TITLE_LENGTH = 25;
 
 export default function AddProduct(props: addProductProps) {
   const [draftName, setDraftName] = useState("");
-  const [draftPrice, setDraftPrice] = useState(0);
+  const [draftPrice, setDraftPrice] = useState("");
   const [draftCategory, setDraftCategory] = useState("");
-  const [draftInStock, setDraftInStock] = useState(0);
+  const [draftInStock, setDraftInStock] = useState(true);
   const [formError, setFormError] = useState("");
 
   function handleNameChange(event: ChangeEvent<HTMLInputElement>) {
@@ -30,15 +23,15 @@ export default function AddProduct(props: addProductProps) {
   }
 
   function handlePriceChange(event: ChangeEvent<HTMLInputElement>) {
-    setDraftPrice(Number(event.target.value));
+    setDraftPrice(event.target.value);
   }
 
-  function handleCategoryChange(event: ChangeEvent<HTMLSelectElement>) {
+  function handleCategoryChange(event: ChangeEvent<HTMLInputElement>) {
     setDraftCategory(event.target.value);
   }
 
   function handleInStockChange(event: ChangeEvent<HTMLSelectElement>) {
-    setDraftInStock(Number(event.target.value));
+    setDraftInStock(event.target.value === "true");
   }
 
   function handleSubmit(event: FormEvent) {
@@ -46,64 +39,99 @@ export default function AddProduct(props: addProductProps) {
 
     const trimmedTitle = draftName.trim();
 
-    if (!trimmedTitle) {
-      setFormError("Title can't be empty.");
+    if (trimmedTitle === "") {
+      setFormError("Product name is required.");
       return;
     }
 
     if (trimmedTitle.length > MAX_TITLE_LENGTH) {
-      setFormError(`Title must be ${MAX_TITLE_LENGTH} characters or fewer.`);
+      setFormError(
+        `Product name must be ${MAX_TITLE_LENGTH} characters or fewer.`,
+      );
       return;
     }
 
-    props.onAddProduct(trimmedTitle, draftCategory, draftPrice, draftInStock);
+    const trimmedCategory = draftCategory.trim();
+    if (trimmedCategory === "") {
+      setFormError("Category is required.");
+      return;
+    }
+
+    const price = Number(draftPrice);
+    if (
+      draftPrice.trim() === "" ||
+      !Number.isFinite(price) ||
+      price <= 0
+    ) {
+      setFormError("Price must be a number greater than 0.");
+      return;
+    }
+
+    props.onAddProduct(
+      trimmedTitle,
+      trimmedCategory,
+      price,
+      draftInStock,
+    );
 
     setDraftName("");
     setFormError("");
-    setDraftPrice(0);
+    setDraftPrice("");
     setDraftCategory("");
-    setDraftInStock(0);
+    setDraftInStock(true);
   }
-  const categoryList = props.productsList
-    .map((product) => product.category)
-    .filter((category, index, array) => array.indexOf(category) === index);
+
   return (
     <form className="add-product-form" onSubmit={handleSubmit}>
-      <input
-        type="number"
-        className="add-product-input"
-        placeholder="Add a price..."
-        value={draftPrice}
-        onChange={handlePriceChange}
-      />
+      <div className="add-product-field">
+        <label htmlFor="product-name">Name</label>
+        <input
+          id="product-name"
+          type="text"
+          className="add-product-input"
+          placeholder="Product name..."
+          value={draftName}
+          onChange={handleNameChange}
+        />
+      </div>
 
-      <select
-        className="add-product-select"
-        value={draftCategory}
-        onChange={handleCategoryChange}
-      >
-        <option value={props.defaultCategory}>Select Category</option>
-        {categoryList.map((item) => (
-          <option value={item}>{item}</option>
-        ))}
-      </select>
-      <select
-        className="add-product-select"
-        value={draftInStock}
-        onChange={handleInStockChange}
-      >
-        <option value={0}>Choose status</option>
-        <option value={1}>Out of Stock</option>
-        <option value={2}>In Stock</option>
-      </select>
+      <div className="add-product-field">
+        <label htmlFor="product-category">Category</label>
+        <input
+          id="product-category"
+          type="text"
+          className="add-product-input"
+          placeholder="Category..."
+          value={draftCategory}
+          onChange={handleCategoryChange}
+        />
+      </div>
 
-      <input
-        type="text"
-        className="add-product-input"
-        placeholder="Add a new product..."
-        value={draftName}
-        onChange={handleNameChange}
-      />
+      <div className="add-product-field">
+        <label htmlFor="product-price">Price</label>
+        <input
+          id="product-price"
+          type="text"
+          inputMode="decimal"
+          className="add-product-input"
+          placeholder="Price..."
+          value={draftPrice}
+          onChange={handlePriceChange}
+        />
+      </div>
+
+      <div className="add-product-field">
+        <label htmlFor="product-status">Status</label>
+        <select
+          id="product-status"
+          className="add-product-select"
+          value={draftInStock ? "true" : "false"}
+          onChange={handleInStockChange}
+        >
+          <option value="true">In Stock</option>
+          <option value="false">Out of Stock</option>
+        </select>
+      </div>
 
       <button className="add-product-button" type="submit">
         Add Product

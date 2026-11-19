@@ -1,4 +1,5 @@
-import { ChangeEvent, useState } from "react";
+import { useState } from "react";
+import type { ChangeEvent } from "react";
 
 interface productListProps {
   id: number;
@@ -18,12 +19,15 @@ export default function ProductList(props: productListProps) {
   const [editError, setEditError] = useState("");
 
   function handleEditClick() {
+    setEditName(props.name);
+    setEditError("");
     setIsEditing(true);
   }
   function handleChangeName(event: ChangeEvent<HTMLInputElement>) {
     setEditName(event.target.value);
   }
   function handleCancelClick() {
+    setEditName(props.name);
     setIsEditing(false);
     setEditError("");
   }
@@ -77,7 +81,7 @@ export default function ProductList(props: productListProps) {
       <div className="product-text">
         <span className="product-name">{props.name}</span>
         <span className="product-category">{props.category}</span>
-        <span className="product-price">{props.price}$</span>
+        <span className="product-price">${props.price.toFixed(2)}</span>
       </div>
       <div className="product-list-btns">
         <button
