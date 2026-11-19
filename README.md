@@ -1,50 +1,43 @@
-# React + TypeScript + Vite
+# Inventory Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A responsive inventory dashboard built with React, TypeScript, and Vite.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Fetches and displays products with name, category, price, and stock status.
+- Shows total, in-stock, and out-of-stock product counts.
+- Adds products with a name, category, price, and stock status.
+- Edits product names and prices, toggles stock status, and removes products.
+- Searches by product name and filters by stock status.
+- Shows loading and error states, with a Retry action if fetching fails.
 
-## Expanding the ESLint configuration
+## Getting started
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+Install dependencies and start the development server:
 
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+```sh
+npm install
+npm run dev
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+## Available scripts
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+```sh
+npm run dev      # Start the Vite development server
+npm run build    # Type-check and create a production build
+npm run lint     # Run ESLint
+npm run preview  # Preview the production build
 ```
+
+## Product data
+
+The initial inventory is stored in [`public/products.json`](./public/products.json)
+and fetched from `/products.json`. Product changes are kept in React state only;
+reloading the page restores the original data from this file.
+
+## Test the error and Retry states
+
+With the development server running, temporarily rename
+`public/products.json` (for example, to `products.json.bak`) and reload the
+dashboard. The app should show an error message and a Retry button. Rename the
+file back to `products.json`, then click Retry to load the products again.
