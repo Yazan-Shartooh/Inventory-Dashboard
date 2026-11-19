@@ -65,10 +65,14 @@ function App() {
     const updatedProducts = products.filter((product) => product.id !== id);
     setProducts(updatedProducts);
   }
-  function handleSaveEdit(id: number, newName: string): void {
+  function handleSaveEdit(
+    id: number,
+    newName: string,
+    newPrice: number,
+  ): void {
     const updatedProducts = products.map((product) => {
       if (product.id === id) {
-        return { ...product, name: newName };
+        return { ...product, name: newName, price: newPrice };
       }
 
       return product;

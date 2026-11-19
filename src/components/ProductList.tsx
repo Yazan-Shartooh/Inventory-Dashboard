@@ -9,25 +9,31 @@ interface productListProps {
   inStock: boolean;
   onToggle: (id: number) => void;
   onDelete: (id: number) => void;
-  onEdit: (id: number, name: string) => void;
+  onEdit: (id: number, name: string, price: number) => void;
 }
 
 const MAX_NAME_LENGTH = 25;
 export default function ProductList(props: productListProps) {
   const [editName, setEditName] = useState(props.name);
+  const [editPrice, setEditPrice] = useState(String(props.price));
   const [isEditing, setIsEditing] = useState(false);
   const [editError, setEditError] = useState("");
 
   function handleEditClick() {
     setEditName(props.name);
+    setEditPrice(String(props.price));
     setEditError("");
     setIsEditing(true);
   }
   function handleChangeName(event: ChangeEvent<HTMLInputElement>) {
     setEditName(event.target.value);
   }
+  function handleChangePrice(event: ChangeEvent<HTMLInputElement>) {
+    setEditPrice(event.target.value);
+  }
   function handleCancelClick() {
     setEditName(props.name);
+    setEditPrice(String(props.price));
     setIsEditing(false);
     setEditError("");
   }
@@ -44,7 +50,13 @@ export default function ProductList(props: productListProps) {
       return;
     }
 
-    props.onEdit(props.id, newName);
+    const newPrice = Number(editPrice);
+    if (editPrice.trim() === "" || !Number.isFinite(newPrice) || newPrice <= 0) {
+      setEditError("Price must be a number greater than 0.");
+      return;
+    }
+
+    props.onEdit(props.id, newName, newPrice);
 
     setEditError("");
     setIsEditing(false);
@@ -58,8 +70,17 @@ export default function ProductList(props: productListProps) {
         <input
           type="text"
           className="edit-product-input"
+          aria-label="Product name"
           value={editName}
           onChange={handleChangeName}
+        />
+        <input
+          type="text"
+          inputMode="decimal"
+          className="edit-product-input"
+          aria-label="Product price"
+          value={editPrice}
+          onChange={handleChangePrice}
         />
 
         <div className="product-edit-actions">
