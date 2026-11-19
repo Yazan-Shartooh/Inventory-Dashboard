@@ -174,13 +174,12 @@ body {
 .product-list {
   list-style: none;
   margin-top: 20px;
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 12px;
 }
 
 .product-item {
-  width: calc(50% - 6px);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -212,9 +211,12 @@ body {
   display: flex;
   flex-direction: column;
   gap: 3px;
+  max-width: 100%;
+  min-width: 0;
 }
 .product-name {
   font-weight: bold;
+  overflow-wrap: anywhere;
 }
 .product-price,
 .product-category {
@@ -288,6 +290,7 @@ body {
   border-radius: 6px;
   flex: 1;
   font-size: 14px;
+  min-width: 0;
   padding: 6px 10px;
 }
 
@@ -337,11 +340,11 @@ select:focus-visible {
 
 @media (max-width: 600px) {
   .header h1 {
-    font-size: 26px;
+    font-size: 22px;
   }
 
   .container {
-    padding: 20px 14px;
+    padding: 20px 12px;
   }
 
   .stats {
@@ -357,12 +360,27 @@ select:focus-visible {
     font-size: 24px;
   }
 
-  .product-item {
+  .add-product-field {
+    flex-basis: 100%;
+    min-width: 0;
+  }
+
+  .add-product-button {
+    align-self: stretch;
     width: 100%;
   }
 
   .filter-button {
-    flex: 1;
+    flex: 1 1 auto;
     padding: 10px;
+  }
+
+  .product-editing {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .product-edit-actions {
+    width: 100%;
   }
 }
