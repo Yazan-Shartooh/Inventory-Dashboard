@@ -15,7 +15,7 @@ interface Product {
 
 type FilterStatus = "all" | "inStock" | "outStock";
 
-const PRODUCT_URL = "/assets/products.json";
+const PRODUCT_URL = "/products.json";
 
 async function fetchProducts(): Promise<Product[]> {
   const response = await fetch(PRODUCT_URL);
@@ -216,10 +216,11 @@ function App() {
             </button>
           </div>
         )}
-        {!isLoadingProducts && !hasProductsError && (
-          <ul className="product-list">
-            {visibleProducts.length > 0 ? (
-              visibleProducts.map((product) => (
+        {!isLoadingProducts &&
+          !hasProductsError &&
+          visibleProducts.length > 0 && (
+            <ul className="product-list">
+              {visibleProducts.map((product) => (
                 <ProductList
                   key={product.id}
                   id={product.id}
@@ -231,15 +232,15 @@ function App() {
                   onDelete={handleDeleteProduct}
                   onEdit={handleSaveEdit}
                 />
-              ))
-            ) : (
-              <li className="empty-state">
-                {products.length === 0
-                  ? "No products to show."
-                  : "No products match your search and filter."}
-              </li>
-            )}
-          </ul>
+              ))}
+            </ul>
+          )}
+        {!isLoadingProducts && !hasProductsError && visibleProducts.length === 0 && (
+          <p className="empty-state">
+            {products.length === 0
+              ? "No products to show."
+              : "No products match your search or filter."}
+          </p>
         )}
       </main>
     </div>
