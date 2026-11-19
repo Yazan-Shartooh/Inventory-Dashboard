@@ -51,7 +51,7 @@ export default function ProductList(props: productListProps) {
     }
 
     const newPrice = Number(editPrice);
-    if (editPrice.trim() === "" || !Number.isFinite(newPrice) || newPrice <= 0) {
+    if (editPrice.trim() === "" || !(newPrice > 0)) {
       setEditError("Price must be a number greater than 0.");
       return;
     }

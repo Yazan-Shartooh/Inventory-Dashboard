@@ -58,11 +58,7 @@ export default function AddProduct(props: addProductProps) {
     }
 
     const price = Number(draftPrice);
-    if (
-      draftPrice.trim() === "" ||
-      !Number.isFinite(price) ||
-      price <= 0
-    ) {
+    if (draftPrice.trim() === "" || !(price > 0)) {
       setFormError("Price must be a number greater than 0.");
       return;
     }
