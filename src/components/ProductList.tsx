@@ -90,10 +90,7 @@ export default function ProductList(props: productListProps) {
           >
             Save
           </button>
-          <button
-            className="product-action-button"
-            onClick={handleCancelClick}
-          >
+          <button className="product-action-button" onClick={handleCancelClick}>
             Cancel
           </button>
           {editError !== "" && <p className="form-error">{editError}</p>}
