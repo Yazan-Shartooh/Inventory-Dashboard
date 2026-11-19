@@ -102,9 +102,8 @@ body {
   width: 100%;
 }
 
-.search-input:focus {
+.search-input:focus-visible {
   border-color: #138d08;
-  outline: none;
 }
 /*------------------------------------------------------------------*/
 .empty-state {
@@ -144,9 +143,8 @@ body {
   padding: 10px 14px;
 }
 
-.add-product-input:focus {
+.add-product-input:focus-visible {
   border-color: #3b6ef5;
-  outline: none;
 }
 
 .add-product-select {
@@ -194,6 +192,22 @@ body {
   flex-wrap: wrap;
 }
 
+.product-item.in-stock {
+  border-left: 5px solid #138d08;
+}
+
+.product-item.out-of-stock {
+  background-color: #f7f1f1;
+  border-left: 5px solid #b30808;
+  color: #626b75;
+}
+
+.product-editing {
+  width: 100%;
+  flex-direction: row;
+  align-items: center;
+}
+
 .product-text {
   display: flex;
   flex-direction: column;
@@ -207,56 +221,83 @@ body {
   color: #6b7280;
   font-size: 12px;
 }
-.task-action-button {
+
+.product-status-badge {
+  align-self: flex-start;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 3px 8px;
+}
+
+.product-status-badge.in-stock {
+  background-color: #e6f4e4;
+  color: #138d08;
+}
+
+.product-status-badge.out-of-stock {
+  background-color: #f6e1e1;
+  color: #b30808;
+}
+
+.product-action-button {
   background-color: #ffffff;
   border: 1px solid #e2e5ea;
   border-radius: 6px;
   cursor: pointer;
   font-size: 13px;
   padding: 6px 10px;
+  color: #1f2430;
 }
 
-.edit:hover {
+.product-status-toggle {
+  background-color: #f4f5f7;
+}
+
+.edit-product-button:hover {
   border-color: #3b6ef5;
 }
-.delete:hover {
+.delete-product-button:hover {
   border-color: #b30808;
 }
-.instock {
-  border-color: #138d08;
-  color: #138d08;
-}
-.outstock {
-  background-color: #138d08;
-  color: #f4f5f7;
-  border: none;
-}
+
 .product-list-btns {
   display: flex;
   flex-wrap: wrap;
   gap: 5px;
 }
 /*-----------------------------*/
-.task-item {
-  margin-top: 20px;
+.product-edit-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
-.save-button {
+
+.product-save-button {
   background-color: #3b6ef5;
   border-color: #3b6ef5;
   color: #ffffff;
 }
 
-.save-button:hover {
+.product-save-button:hover {
   background-color: #2f5cd6;
 }
 
-.edit-title-input {
+.edit-product-input {
   border: 1px solid #3b6ef5;
   border-radius: 6px;
   flex: 1;
   font-size: 14px;
   padding: 6px 10px;
 }
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 3px solid #245bd6;
+  outline-offset: 2px;
+}
+
 .form-error {
   color: #c0392b;
   font-size: 13px;

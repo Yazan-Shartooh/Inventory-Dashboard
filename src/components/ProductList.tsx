@@ -52,49 +52,64 @@ export default function ProductList(props: productListProps) {
 
   if (isEditing) {
     return (
-      <li className="task-item">
+      <li
+        className={`product-item product-editing ${props.inStock ? "in-stock" : "out-of-stock"}`}
+      >
         <input
           type="text"
-          className="edit-title-input"
+          className="edit-product-input"
           value={editName}
           onChange={handleChangeName}
         />
 
-        <span className="task-actions">
+        <div className="product-edit-actions">
           <button
-            className="task-action-button save-button"
+            className="product-action-button product-save-button"
             onClick={handleSaveClick}
           >
             Save
           </button>
-          <button className="task-action-button" onClick={handleCancelClick}>
+          <button
+            className="product-action-button"
+            onClick={handleCancelClick}
+          >
             Cancel
           </button>
           {editError !== "" && <p className="form-error">{editError}</p>}
-        </span>
+        </div>
       </li>
     );
   }
 
   return (
-    <li className="product-item">
+    <li
+      className={`product-item ${props.inStock ? "in-stock" : "out-of-stock"}`}
+    >
       <div className="product-text">
         <span className="product-name">{props.name}</span>
+        <span
+          className={`product-status-badge ${props.inStock ? "in-stock" : "out-of-stock"}`}
+        >
+          {props.inStock ? "In Stock" : "Out of Stock"}
+        </span>
         <span className="product-category">{props.category}</span>
         <span className="product-price">${props.price.toFixed(2)}</span>
       </div>
       <div className="product-list-btns">
         <button
-          className={`task-action-button ${props.inStock ? "instock" : "outstock"}`}
+          className="product-action-button product-status-toggle"
           onClick={() => props.onToggle(props.id)}
         >
-          {props.inStock ? "InStock" : "Out of Stock"}
+          {props.inStock ? "Mark out of stock" : "Mark in stock"}
         </button>
-        <button className="task-action-button edit" onClick={handleEditClick}>
+        <button
+          className="product-action-button edit-product-button"
+          onClick={handleEditClick}
+        >
           Edit
         </button>
         <button
-          className="task-action-button delete"
+          className="product-action-button delete-product-button"
           onClick={() => props.onDelete(props.id)}
         >
           Delete
